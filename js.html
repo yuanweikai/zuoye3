@@ -1,0 +1,219 @@
+
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset = "UTF-8">
+		<title></title>
+		<style>
+		{margin:0px; border:0px; padding:0px;}
+		#container {
+			width:340px;
+			height:280px;
+			border:1px solid #333;
+			overflow:hidden;
+			position:relative;
+		}
+		#list {
+			width:3950px;
+			height:280px;
+			position:absolute;
+			Z-index:1; 
+		}
+		#list img {
+			float:left;
+		}
+		#buttons {
+			position:absolute;
+            height:10px;
+            widht:10px;
+            bottom:40px;
+            left:120px;
+            Z-index:2;
+
+		}
+		#buttons span {
+			cursor:pointer;
+			 float:left;
+			border:1px solid black;
+			width:10px;
+			height:10px;
+			border-radius:10px;
+            background:#333;
+            margin-right:5px;
+		}
+		#buttons .on {
+			background:blue;
+
+		}
+       /* .arrow {
+        	cursor:pointer;
+        	display:none;
+        	text-align:center;
+        	font-size:36px;
+        	font-weight:bold;
+        	width:40px;
+        	height:40px;
+        	position:absolute;
+        	Z-index:2;
+        	top:50%;
+        	background-color:RGBA(0,0,0,0.3);
+        	color:#fff;
+        	text-decoration:none;
+        }
+        .arrow:hover {
+        	background-color:RGBA(0,0,0,.7);
+        }
+        #container:hover .arrow {
+        	display:block;
+        }
+        #pre {left:20px;}
+        #next {right:20px;}*/
+		.larrow, .rarrow {
+			position:absolute;
+			width:40px;
+			height:40px;
+			bottom:50%;
+			display:none;
+			/*background-color:rgba(0,0,0,0);*/
+			z-index:2;
+            text-indent:999px;
+
+		}
+		.larrow {
+			background:url(images1/20141210124201.png) no-repeat;
+			left:5px;
+		}
+		.rarrow {
+			background:url(images1/20141210124226.png) no-repeat;
+			right:5px;
+		}
+		#container:hover .larrow {
+			/*background-color:rgba(0,0,0,0.7);*/
+            display:block;
+		}
+		#container:hover .rarrow {
+            display:block;
+		}
+		</style>
+		<script>
+        window.onload = function() {
+        	var list = document.getElementById("list"),
+                buttons = document.getElementById("buttons").getElementsByTagName("span"),
+                pre = document.getElementById("pre"),
+                next = document.getElementById("next");
+                var index = 1,len = buttons.length;
+                var animated = false;
+                var timer;
+
+                
+                for(var i = 0;i < len;i++){
+                    buttons[i].onclick = function() {
+                        if(this.className == "on")
+                            return;
+                        var myIndex = parseInt(this.getAttribute("index"));
+                        var offset = -340 * (myIndex - index);
+
+                        if(!animated)
+                            animate(offset);
+                        index = myIndex;
+                        showButton();
+                    }
+                }
+
+                function showButton() {
+                    for(var i = 0;i < len;i++){
+                        if(buttons[i].className == "on"){
+                            buttons[i].className = "";
+                            break;
+                        }
+                    }
+                    buttons[index - 1].className = "on";
+                    //index要减一
+                }
+
+                function animate(offset) {
+                    animated = true;
+                    var newLeft = list.offsetLeft + offset;
+                    var time = 300,interval = 10;
+                    var speed = offset/(time/interval);
+
+                    function go() {
+                        if((speed < 0 && list.offsetLeft > newLeft) || (speed > 0 && list.offsetLeft < newLeft)){
+                            list.style.left = list.offsetLeft + speed + "px";
+                            setTimeout(go,interval);
+                        }
+                            
+                        else{
+                            animated = false;
+                            list.style.left = newLeft + "px";
+
+                            if(newLeft < -1700)
+                                list.style.left = -340 + "px";
+                            if(newLeft > -340)
+                                list.style.left = -1700 + "px";
+                        }
+                    }
+                    go();  
+                }
+
+                function play() {
+                    timer = setInterval(function() {
+                        next.onclick();
+                    },2000)
+                }
+
+                function stop() {
+                    clearInterval(timer);
+                }
+
+                next.onclick = function() {
+                    if(index == len)
+                        index = 1;
+                    else
+                        index++;
+                    showButton();
+                    if(!animated)
+                        animate(-340);
+                }
+                pre.onclick = function() {
+                    if(index == 1)
+                        index = len;
+                    else
+                        index--;
+                    showButton();
+                    if(!animated)
+                        amimate(340);
+                }
+                container.onmouseover = stop;
+                container.onmouseout = play;
+
+                 play();
+        }
+		</script>
+	</head>
+	
+	<body>
+		<div id="container">
+			<div id="list" style="left:-340px;">
+				<img src="images1/4.png" alt="">
+				<img src="images1/0.png" alt="">
+				<img src="images1/1.png" alt="">
+				<img src="images1/2.png" alt="">
+				<img src="images1/3.png" alt="">
+				<img src="images1/4.png" alt="">
+				<img src="images1/0.png" alt="">
+			</div>
+			<div id="buttons">
+				<span index="1" class="on"></span>
+				<span index="2"></span>
+				<span index="3"></span>
+				<span index="4"></span>
+				<span index="5"></span>
+			</div>
+			<a href="javascript:;" class="larrow" id="pre">&lt;
+			</a>
+			<a href="javascript:;" class="rarrow" id="next">&gt;</a>
+		</div>
+	</body>
+</html>
